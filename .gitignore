@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+dist/
+build/
+
+# Environment variables
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+
+# Backend khusus
+backend/.env
+backend/dist/
+
+# Frontend Vite
+frontend/node_modules/
+frontend/dist/
+frontend/.DS_Store
+frontend/dist-ssr
+frontend/*.local
