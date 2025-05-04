@@ -5,7 +5,7 @@ import { Request, Response } from "express";
 export const createCategory = asyncHandler(
   async (req: Request, res: Response) => {
     const category = new Category(req.body);
-    const createCategory = await category.save();
+    await category.save();
     res.status(201).json({
       status: res.statusCode,
       message: "Category created",
@@ -16,7 +16,7 @@ export const createCategory = asyncHandler(
 export const getAllCategories = asyncHandler(
   async (req: Request, res: Response) => {
     const categories = await Category.find();
-    res.json(categories);
+    res.json({ status: res.statusCode, message: "success", data: categories });
   }
 );
 
@@ -24,7 +24,7 @@ export const getCategoryDetails = asyncHandler(
   async (req: Request, res: Response) => {
     const category = await Category.findById(req.params.id);
     if (category) {
-      res.json(category);
+      res.json({ status: res.statusCode, message: "success", data: category });
     } else {
       res.status(404);
       throw new Error("Category not found");
