@@ -1,5 +1,5 @@
 import { Router } from "express";
-// import { protect, admin } from '../middleware/authMiddleware';
+
 import {
   createProduct,
   deleteProduct,
@@ -7,14 +7,18 @@ import {
   getProductDetails,
   updateProduct,
 } from "../controllers/productController";
+import { verifyToken } from "../middlewares/auth";
+import { adminOnly } from "../middlewares/admin";
 
 const productRouter = Router();
 
-productRouter.route("/").get(getAllProduct).post(createProduct);
+productRouter.route("/").get(getAllProduct);
+productRouter.route("/:id").get(getProductDetails);
+
+productRouter.post("/", verifyToken, adminOnly, createProduct);
 productRouter
   .route("/:id")
-  .get(getProductDetails)
-  .put(updateProduct)
-  .delete(deleteProduct);
+  .put(verifyToken, adminOnly, updateProduct)
+  .delete(verifyToken, adminOnly, deleteProduct);
 
 export default productRouter;

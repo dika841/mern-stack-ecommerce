@@ -13,8 +13,8 @@ interface IUser extends Document {
     country: string;
   };
   wishlist?: Schema.Types.ObjectId[];
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 const userSchema = new Schema<IUser>(
   {

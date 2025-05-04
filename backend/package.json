@@ -15,16 +15,21 @@
   "license": "ISC",
   "packageManager": "pnpm@10.8.1",
   "dependencies": {
+    "argon2": "^0.43.0",
+    "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-async-handler": "^1.2.0",
+    "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.14.1"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.7.0",
+    "@types/body-parser": "^1.19.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.3",
     "eslint": "^9.25.1",
     "nodemon": "^3.1.10",
