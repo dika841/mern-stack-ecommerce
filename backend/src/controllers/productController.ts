@@ -10,6 +10,11 @@ export const createProduct = asyncHandler(
   async (req: Request, res: Response) => {
     const product = new Product(req.body);
     const createProduce = await product.save();
+    if (!createProduce) {
+      res.status(400);
+      throw new Error("Product not created");
+    }
+
     res.status(201).json({
       status: res.statusCode,
       message: "Product created",
@@ -21,22 +26,22 @@ export const getAllProduct = asyncHandler(
   async (req: Request, res: Response) => {
     const {
       page = 1,
-      limit = 10,
+      per_page = 10,
       category,
-      minPrice,
-      maxPrice,
+      min_price,
+      max_price,
       sort,
     } = req.query;
     const pageNumber = parseInt(page as string);
-    const limitNumber = parseInt(limit as string);
+    const limitNumber = parseInt(per_page as string);
     const skip = (pageNumber - 1) * limitNumber;
 
     const filter: any = {};
     if (category) filter.category = category;
-    if (minPrice || maxPrice) {
+    if (min_price || max_price) {
       filter["variants.price"] = {};
-      if (minPrice) filter["variants.price"].$gte = Number(minPrice);
-      if (maxPrice) filter["variants.price"].$lte = Number(maxPrice);
+      if (min_price) filter["variants.price"].$gte = Number(min_price);
+      if (max_price) filter["variants.price"].$lte = Number(max_price);
     }
     const sortOptions: any = {};
     if (Object.keys(sortOptions).length === 0) {
@@ -63,8 +68,8 @@ export const getAllProduct = asyncHandler(
       metadata: {
         totalItems: total,
         totalPage,
-        currentPage: pageNumber,
-        itemsPerPage: limitNumber,
+        page: pageNumber,
+        perPage: limitNumber,
         hasNextPage: pageNumber < totalPage,
         hasPrevPage: pageNumber > 1,
       },
