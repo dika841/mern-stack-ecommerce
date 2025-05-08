@@ -8,19 +8,48 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as LayoutIndexImport } from './routes/_layout.index'
 import { Route as DemoTanstackQueryImport } from './routes/demo.tanstack-query'
 import { Route as DemoTableImport } from './routes/demo.table'
+import { Route as DashboardDashboardImport } from './routes/dashboard/_dashboard'
+import { Route as AuthAuthLayoutImport } from './routes/auth/_auth-layout'
+import { Route as DashboardDashboardIndexImport } from './routes/dashboard/_dashboard.index'
+import { Route as AuthAuthLayoutLoginImport } from './routes/auth/_auth-layout.login'
+
+// Create Virtual Routes
+
+const DashboardImport = createFileRoute('/dashboard')()
+const AuthImport = createFileRoute('/auth')()
 
 // Create/Update Routes
 
-const IndexRoute = IndexImport.update({
+const DashboardRoute = DashboardImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 const DemoTanstackQueryRoute = DemoTanstackQueryImport.update({
@@ -35,16 +64,66 @@ const DemoTableRoute = DemoTableImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const DashboardDashboardRoute = DashboardDashboardImport.update({
+  id: '/_dashboard',
+  getParentRoute: () => DashboardRoute,
+} as any)
+
+const AuthAuthLayoutRoute = AuthAuthLayoutImport.update({
+  id: '/_auth-layout',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const DashboardDashboardIndexRoute = DashboardDashboardIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => DashboardDashboardRoute,
+} as any)
+
+const AuthAuthLayoutLoginRoute = AuthAuthLayoutLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthAuthLayoutRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/_auth-layout': {
+      id: '/auth/_auth-layout'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthAuthLayoutImport
+      parentRoute: typeof AuthRoute
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardImport
+      parentRoute: typeof rootRoute
+    }
+    '/dashboard/_dashboard': {
+      id: '/dashboard/_dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardDashboardImport
+      parentRoute: typeof DashboardRoute
     }
     '/demo/table': {
       id: '/demo/table'
@@ -60,47 +139,168 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoTanstackQueryImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/': {
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
+    '/auth/_auth-layout/login': {
+      id: '/auth/_auth-layout/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthAuthLayoutLoginImport
+      parentRoute: typeof AuthAuthLayoutImport
+    }
+    '/dashboard/_dashboard/': {
+      id: '/dashboard/_dashboard/'
+      path: '/'
+      fullPath: '/dashboard/'
+      preLoaderRoute: typeof DashboardDashboardIndexImport
+      parentRoute: typeof DashboardDashboardImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface LayoutRouteChildren {
+  LayoutIndexRoute: typeof LayoutIndexRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutIndexRoute: LayoutIndexRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
+interface AuthAuthLayoutRouteChildren {
+  AuthAuthLayoutLoginRoute: typeof AuthAuthLayoutLoginRoute
+}
+
+const AuthAuthLayoutRouteChildren: AuthAuthLayoutRouteChildren = {
+  AuthAuthLayoutLoginRoute: AuthAuthLayoutLoginRoute,
+}
+
+const AuthAuthLayoutRouteWithChildren = AuthAuthLayoutRoute._addFileChildren(
+  AuthAuthLayoutRouteChildren,
+)
+
+interface AuthRouteChildren {
+  AuthAuthLayoutRoute: typeof AuthAuthLayoutRouteWithChildren
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthAuthLayoutRoute: AuthAuthLayoutRouteWithChildren,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
+interface DashboardDashboardRouteChildren {
+  DashboardDashboardIndexRoute: typeof DashboardDashboardIndexRoute
+}
+
+const DashboardDashboardRouteChildren: DashboardDashboardRouteChildren = {
+  DashboardDashboardIndexRoute: DashboardDashboardIndexRoute,
+}
+
+const DashboardDashboardRouteWithChildren =
+  DashboardDashboardRoute._addFileChildren(DashboardDashboardRouteChildren)
+
+interface DashboardRouteChildren {
+  DashboardDashboardRoute: typeof DashboardDashboardRouteWithChildren
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardDashboardRoute: DashboardDashboardRouteWithChildren,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
+  '/auth': typeof AuthAuthLayoutRouteWithChildren
+  '/dashboard': typeof DashboardDashboardRouteWithChildren
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/': typeof LayoutIndexRoute
+  '/auth/login': typeof AuthAuthLayoutLoginRoute
+  '/dashboard/': typeof DashboardDashboardIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/auth': typeof AuthAuthLayoutRouteWithChildren
+  '/dashboard': typeof DashboardDashboardIndexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/': typeof LayoutIndexRoute
+  '/auth/login': typeof AuthAuthLayoutLoginRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/auth/_auth-layout': typeof AuthAuthLayoutRouteWithChildren
+  '/dashboard': typeof DashboardRouteWithChildren
+  '/dashboard/_dashboard': typeof DashboardDashboardRouteWithChildren
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
+  '/_layout/': typeof LayoutIndexRoute
+  '/auth/_auth-layout/login': typeof AuthAuthLayoutLoginRoute
+  '/dashboard/_dashboard/': typeof DashboardDashboardIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/demo/table' | '/demo/tanstack-query'
+  fullPaths:
+    | ''
+    | '/auth'
+    | '/dashboard'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+    | '/'
+    | '/auth/login'
+    | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/demo/table' | '/demo/tanstack-query'
-  id: '__root__' | '/' | '/demo/table' | '/demo/tanstack-query'
+  to:
+    | '/auth'
+    | '/dashboard'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+    | '/'
+    | '/auth/login'
+  id:
+    | '__root__'
+    | '/_layout'
+    | '/auth'
+    | '/auth/_auth-layout'
+    | '/dashboard'
+    | '/dashboard/_dashboard'
+    | '/demo/table'
+    | '/demo/tanstack-query'
+    | '/_layout/'
+    | '/auth/_auth-layout/login'
+    | '/dashboard/_dashboard/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
+  DashboardRoute: typeof DashboardRouteWithChildren
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
+  DashboardRoute: DashboardRouteWithChildren,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
 }
@@ -115,19 +315,62 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
+        "/_layout",
+        "/auth",
+        "/dashboard",
         "/demo/table",
         "/demo/tanstack-query"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_layout": {
+      "filePath": "_layout.tsx",
+      "children": [
+        "/_layout/"
+      ]
+    },
+    "/auth": {
+      "filePath": "auth",
+      "children": [
+        "/auth/_auth-layout"
+      ]
+    },
+    "/auth/_auth-layout": {
+      "filePath": "auth/_auth-layout.tsx",
+      "parent": "/auth",
+      "children": [
+        "/auth/_auth-layout/login"
+      ]
+    },
+    "/dashboard": {
+      "filePath": "dashboard",
+      "children": [
+        "/dashboard/_dashboard"
+      ]
+    },
+    "/dashboard/_dashboard": {
+      "filePath": "dashboard/_dashboard.tsx",
+      "parent": "/dashboard",
+      "children": [
+        "/dashboard/_dashboard/"
+      ]
     },
     "/demo/table": {
       "filePath": "demo.table.tsx"
     },
     "/demo/tanstack-query": {
       "filePath": "demo.tanstack-query.tsx"
+    },
+    "/_layout/": {
+      "filePath": "_layout.index.tsx",
+      "parent": "/_layout"
+    },
+    "/auth/_auth-layout/login": {
+      "filePath": "auth/_auth-layout.login.tsx",
+      "parent": "/auth/_auth-layout"
+    },
+    "/dashboard/_dashboard/": {
+      "filePath": "dashboard/_dashboard.index.tsx",
+      "parent": "/dashboard/_dashboard"
     }
   }
 }

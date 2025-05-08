@@ -18,10 +18,12 @@
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
+
     "noEmit": true,
 
     /* Linting */
     "skipLibCheck": true,
+    "maxNodeModuleJsDepth": 10,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
