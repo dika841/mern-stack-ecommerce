@@ -81,8 +81,8 @@ export default function Header() {
             Help
           </Button>
 
-          <Button variant={'link'} className="text-white">
-            Login
+          <Button variant={'link'} className="text-white" asChild>
+            <Link to={'/auth/login'}>Login</Link>
           </Button>
 
           <Button variant={'link'} className="text-white">
